@@ -17,13 +17,13 @@ enum ReasonRefundStatusEnum: string implements HasLabel
     public function getLabel(): string
     {
         return match ($this) {
-            self::CHARGE_FOR_PENDING_REFUND_DISPUTED => 'Constestação de reembolso',
-            self::DECLINED                           => 'Reembolso recusado',
-            self::EXPIRED_OR_CANCELED_CARD           => 'Expirada ou Cancelada',
-            self::INSUFFICIENT_FUNDS                 => 'Saldo Insuficiente',
-            self::LOST_OR_STOLEN_CARD                => 'Perda ou roubo do cartão',
-            self::MERCANT_REQUEST                    => 'Falha no reembolso',
-            self::UNKNOWN                            => ' falhou por motivo desconhecido',
+            self::CHARGE_FOR_PENDING_REFUND_DISPUTED => 'Refund dispute',
+            self::DECLINED                           => 'Refund declined',
+            self::EXPIRED_OR_CANCELED_CARD           => 'Expired or Cancelled',
+            self::INSUFFICIENT_FUNDS                 => 'Insufficient funds',
+            self::LOST_OR_STOLEN_CARD                => 'Lost or stolen card',
+            self::MERCANT_REQUEST                    => 'Refund failure',
+            self::UNKNOWN                            => 'Failed for unknown reason',
         };
     }
 

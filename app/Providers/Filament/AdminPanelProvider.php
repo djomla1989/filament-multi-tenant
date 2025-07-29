@@ -31,7 +31,7 @@ class AdminPanelProvider extends PanelProvider
             ->globalSearchKeyBindings(['command+k', 'ctrl+k'])
             ->userMenuItems([
                 MenuItem::make()
-                    ->label('Aplicativo')
+                    ->label('Application')
                     ->icon('heroicon-o-cog-6-tooth')
                     ->url('/app'),
             ])
@@ -45,9 +45,9 @@ class AdminPanelProvider extends PanelProvider
                 'warning' => Color::Orange,
             ])
             ->navigationGroups([
-                'Planos',
-                'Administração',
-                'Sistema',
+                'Plans',
+                'Administration',
+                'System',
 
             ])
             ->discoverResources(in: app_path('Filament/Admin/Resources'), for: 'App\\Filament\\Admin\\Resources')

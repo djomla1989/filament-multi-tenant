@@ -20,13 +20,13 @@ class UserResource extends Resource
 
     protected static ?string $navigationIcon = 'fas-user-plus';
 
-    protected static ?string $navigationGroup = 'Administração';
+    protected static ?string $navigationGroup = 'Administration';
 
-    protected static ?string $navigationLabel = 'Meus Usuários';
+    protected static ?string $navigationLabel = 'My Users';
 
-    protected static ?string $modelLabel = 'Usuário';
+    protected static ?string $modelLabel = 'User';
 
-    protected static ?string $modelLabelPlural = "Usuários";
+    protected static ?string $modelLabelPlural = "Users";
 
     protected static ?int $navigationSort = 2;
 
@@ -38,8 +38,8 @@ class UserResource extends Resource
 
             ->schema([
 
-                Section::make('Dados do usuário')
-                    ->description('Preencha os dados do usuário, a senha de acesso será gerada automaticamente e enviada para o e-mail do seu usuário.')
+                                    Section::make('User Data')
+                    ->description('Fill in the user data, the access password will be automatically generated and sent to your user\'s email.')
                     ->schema([
                         TextInput::make('name')
                             ->required()
@@ -50,7 +50,7 @@ class UserResource extends Resource
                             ->prefixIcon('fas-envelope')
                             ->unique(User::class, 'email', ignoreRecord: true)
                             ->validationMessages([
-                                'unique' => 'E-mail já cadastrado.',
+                                'unique' => 'Email already registered.',
                             ])
                             ->required()
                             ->maxLength(255),
@@ -75,16 +75,16 @@ class UserResource extends Resource
                     })
                     ->alignCenter(),
                 Tables\Columns\TextColumn::make('name')
-                    ->label('Nome')
+                    ->label('Name')
                     ->searchable(),
                 Tables\Columns\TextColumn::make('email')
                     ->searchable(),
                 TextColumn::make('phone')
-                    ->label('Telefone')
+                    ->label('Phone')
                     ->searchable(),
 
                 ToggleColumn::make('is_active')
-                    ->label('Ativo')
+                    ->label('Active')
                     ->sortable()
                     ->alignCenter()
                     ->beforeStateUpdated(function ($record, $state) {
@@ -92,30 +92,30 @@ class UserResource extends Resource
 
                         if ($state === true) {
                             Notification::make()
-                            ->title('Acesso Liberado')
-                            ->body("O Acesso do Usuário {$record->name} foi liberado")
+                            ->title('Access Granted')
+                            ->body("User {$record->name}'s access has been granted")
                             ->success()
                             ->send();
                         } else {
                             Notification::make()
-                            ->title('Acesso Desativado')
-                            ->body("O Acesso do Usuário {$record->name} foi Desativado")
+                            ->title('Access Disabled')
+                            ->body("User {$record->name}'s access has been disabled")
                             ->warning()
                             ->send();
                         }
 
                     }),
                 Tables\Columns\IconColumn::make('is_tenant_admin')
-                    ->label('Dono do Tenant')
+                    ->label('Tenant Owner')
                     ->alignCenter()
                     ->boolean(),
                 Tables\Columns\TextColumn::make('created_at')
-                    ->label('Criado em')
+                    ->label('Created at')
                     ->dateTime()
                     ->sortable()
                     ->toggleable(isToggledHiddenByDefault: true),
                 Tables\Columns\TextColumn::make('updated_at')
-                    ->label('Atualizado em')
+                    ->label('Updated at')
                     ->dateTime()
                     ->sortable()
                     ->toggleable(isToggledHiddenByDefault: true),

@@ -22,13 +22,13 @@ class SubscriptionResource extends Resource
 
     protected static ?string $navigationIcon = 'fas-hand-holding-dollar';
 
-    protected static ?string $navigationGroup = 'Administração';
+    protected static ?string $navigationGroup = 'Administration';
 
-    protected static ?string $navigationLabel = 'Minhas Assinaturas';
+    protected static ?string $navigationLabel = 'My Subscriptions';
 
-    protected static ?string $modelLabel = 'Minha Assinatura';
+    protected static ?string $modelLabel = 'My Subscription';
 
-    protected static ?string $modelLabelPlural = "Minhas Assinaturas";
+    protected static ?string $modelLabelPlural = "My Subscriptions";
 
     protected static ?int $navigationSort = 1;
 
@@ -54,7 +54,7 @@ class SubscriptionResource extends Resource
                     ->searchable(),
 
                 TextColumn::make('stripe_period')
-                    ->label('Tipo do Plano')
+                    ->label('Plan Type')
                     ->getStateUsing(function ($record) {
                         // Acessa o preço relacionado via o relacionamento definido
                         return $record->price->interval;
@@ -64,7 +64,7 @@ class SubscriptionResource extends Resource
                     ->sortable(),
 
                 TextColumn::make('stripe_price')
-                    ->label('Valor do Plano')
+                    ->label('Plan Value')
                     ->getStateUsing(function ($record) {
                         // Acessa o preço relacionado via o relacionamento definido
                         return $record->price->unit_amount;
@@ -74,42 +74,42 @@ class SubscriptionResource extends Resource
                     ->sortable(),
 
                 TextColumn::make('trial_ends_at')
-                    ->label('Fim Período de Teste')
+                    ->label('Trial Period End')
                     ->alignCenter()
                     ->dateTime('d/m/Y'),
 
                 TextColumn::make('current_period_start')
-                    ->label('Inicio da Cobrança')
+                    ->label('Billing Start')
                     ->alignCenter()
                     ->dateTime('d/m/Y'),
 
                 TextColumn::make('ends_at')
-                    ->label('Expira em')
+                    ->label('Expires On')
                     ->alignCenter()
                     ->dateTime('d/m/Y'),
 
                 TextColumn::make('remaining_time')
-                    ->label('Tempo Restante')
+                    ->label('Remaining Time')
 
                     ->getStateUsing(function ($record) {
                         $endsAt = $record->ends_at ? Carbon::parse($record->ends_at) : null;
 
                         if (!$endsAt) {
-                            return 'Sem data definida';
+                            return 'No date defined';
                         }
 
                         $now = now();
 
                         // Verifica se o plano já expirou
                         if ($now > $endsAt) {
-                            return 'Expirado';
+                            return 'Expired';
                         }
 
                         // Calcula a diferença total em dias e horas
                         $remainingDays  = $now->diffInDays($endsAt, false);
                         $remainingHours = $now->diffInHours($endsAt) % 24;
 
-                        return sprintf('%d dias e %02d horas', $remainingDays, $remainingHours);
+                        return sprintf('%d days and %02d hours', $remainingDays, $remainingHours);
                     })
                     ->alignCenter(),
             ])
@@ -118,41 +118,41 @@ class SubscriptionResource extends Resource
             ])
             ->actions([
                 ActionGroup::make([
-                    Action::make('Cancelar Assinatura')
+                                            Action::make('Cancel Subscription')
                         ->form([
 
-                            Fieldset::make('Motivo do Cancelamento')
+                            Fieldset::make('Cancellation Reason')
                                 ->schema([
                                     Select::make('reason')
-                                        ->label('Selecione o Motivo')
+                                        ->label('Select Reason')
                                         ->options(CancelSubscriptionEnum::class)
                                         ->required(),
                                 ])->columns(1),
 
-                            Fieldset::make('Suas Impressões')
+                            Fieldset::make('Your Impressions')
                                 ->schema([
                                     Textarea::make('coments')
-                                        ->label('Comentário ou Feedback')
+                                        ->label('Comments or Feedback')
                                         ->rows(4)
                                         ->columnSpan('full'),
                                 ])->columns(1),
 
-                            Fieldset::make('Sua Nota')
+                            Fieldset::make('Your Rating')
                                 ->schema([
                                     RatingStar::make('rating')
-                                        ->label('Avaliação')
+                                        ->label('Rating')
                                         ->required()
                                         ->columnSpan('full'),
                                 ])->columns(1),
 
                         ])
                         ->requiresConfirmation()
-                        ->modalHeading('Confirmar Cancelamento')
+                        ->modalHeading('Confirm Cancellation')
                         ->modalDescription(function ($record) {
                             // Usando Carbon para formatar a data ends_at
                             $endsAt = Carbon::parse($record->ends_at)->format('d/m/Y H:i'); // Formato desejado
 
-                            return "Atenção!!! após o cancelamento você terá acesso a plataforma até: {$endsAt}, após essa data nenhuma cobrança será feita, seus acessos serão revogados e todos os dados serão apagados. Deseja continuar?";
+                            return "Warning!!! After cancellation, you will have access to the platform until: {$endsAt}, after that date no charges will be made, your access will be revoked and all data will be deleted. Do you want to continue?";
                         })
                         ->slideOver()
                         ->slideOver()
@@ -175,11 +175,11 @@ class SubscriptionResource extends Resource
                         ->color('danger')
                         ->icon('heroicon-o-key'),
 
-                    Action::make('Baixar Invoice')
-                        ->label('Baixar Invoice')
+                                            Action::make('Download Invoice')
+                        ->label('Download Invoice')
                         ->icon('heroicon-o-document-arrow-down')
                         ->url(fn ($record) => $record->invoice_pdf)
-                        ->tooltip('Baixar PDF da Fatura')
+                        ->tooltip('Download Invoice PDF')
                         ->color('primary'),
                 ])
                 ->icon('fas-sliders')

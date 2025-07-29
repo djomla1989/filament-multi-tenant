@@ -17,35 +17,35 @@ class PricesRelationManager extends RelationManager
 {
     protected static string $relationship = 'prices';
 
-    protected static ?string $modelLabel = 'Preço';
+    protected static ?string $modelLabel = 'Price';
 
-    protected static ?string $modelLabelPlural = "Preço";
+    protected static ?string $modelLabelPlural = "Prices";
 
-    protected static ?string $title = 'Valores dos Produtos';
+    protected static ?string $title = 'Product Prices';
 
     public function form(Form $form): Form
     {
         return $form
             ->schema([
                 Select::make('currency')
-                    ->label('Moeda')
+                    ->label('Currency')
                     ->required()
                     ->searchable()
                     ->options(ProductCurrencyEnum::class),
 
                 Select::make('interval')
-                    ->label('Intervalo de Cobrança')
+                    ->label('Billing Interval')
                     ->options(ProductIntervalEnum::class)
                     ->searchable()
                     ->required(),
 
                 Money::make('unit_amount')
-                    ->label('Preço')
+                    ->label('Price')
                     ->default('100,00')
                     ->required(),
 
                 TextInput::make('trial_period_days')
-                    ->label('Periodo de testes')
+                    ->label('Trial period')
                     ->required()
                     ->default(0)
                     ->integer(),
@@ -59,32 +59,32 @@ class PricesRelationManager extends RelationManager
             ->recordTitleAttribute('price')
             ->columns([
                 TextColumn::make('stripe_price_id')
-                    ->label('Id Gateway Pagamento')
+                    ->label('Payment Gateway ID')
                     ->sortable(),
 
                 TextColumn::make('currency')
-                    ->label('Moeda')
+                    ->label('Currency')
                     ->badge()
                     ->alignCenter()
                     ->sortable(),
 
                 TextColumn::make('interval')
-                    ->label('Intervalo de Cobrança')
+                    ->label('Billing Interval')
                     ->badge()
                     ->sortable()
                     ->alignCenter(),
 
                 ToggleColumn::make('is_active')
-                    ->label('Ativo para cliente')
+                    ->label('Asset for client')
                     ->alignCenter(),
 
                 TextColumn::make('unit_amount')
-                    ->label('Preço')
-                    ->money('BRL')
+                    ->label('Unit Amount')
+                    ->money('EUR')
                     ->sortable(),
 
                 TextColumn::make('trial_period_days')
-                    ->label('Dias de Teste')
+                    ->label('Trial Period Days')
                     ->alignCenter(),
             ])
             ->filters([
@@ -101,8 +101,8 @@ class PricesRelationManager extends RelationManager
                         } catch (\Exception $e) {
 
                             Notification::make()
-                                ->title('Erro ao Criar Preço')
-                                ->body('Ocorreu um erro ao criar o preço no Stripe: ' . $e->getMessage())
+                                ->title('Error Creating Price')
+                                ->body('An error occurred while creating the price in Stripe: ' . $e->getMessage())
                                 ->danger()
                                 ->send();
                         }

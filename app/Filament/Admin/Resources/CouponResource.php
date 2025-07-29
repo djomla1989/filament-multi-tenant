@@ -23,11 +23,11 @@ class CouponResource extends Resource
 
     protected static ?string $navigationGroup = 'Planos';
 
-    protected static ?string $navigationLabel = 'Cupom de Desconto';
+    protected static ?string $navigationLabel = 'Discount Coupon';
 
-    protected static ?string $modelLabel = 'Cupom';
+    protected static ?string $modelLabel = 'Coupon';
 
-    protected static ?string $modelLabelPlural = "Cupons";
+    protected static ?string $modelLabelPlural = "Coupons";
 
     protected static ?int $navigationSort = 2;
 
@@ -37,55 +37,55 @@ class CouponResource extends Resource
         return $form
             ->schema([
 
-                Fieldset::make('Código Promocional')
+                Fieldset::make('Promotional Code')
                 ->schema([
 
                     TextInput::make('coupon_code')
-                        ->label('Código')
+                        ->label('Code')
                         ->maxLength(255)
                         ->readOnly(),
 
                     TextInput::make('name')
-                        ->label('Nome para o cupom')
+                        ->label('Coupon name')
                         ->maxLength(20),
 
                     Select::make('currency')
-                        ->label('Moeda')
+                        ->label('Currency')
                         ->options(ProductCurrencyEnum::class)
                         ->reactive()
                         ->required(),
 
                     TextInput::make('percent_off')
-                        ->label('Percentual de Desconto')
+                        ->label('Discount Percentage')
                         ->prefixIcon('fas-percent')
                         ->numeric()
                         ->rule('max:100')
                         ->validationAttribute('percent_off')
                         ->validationMessages([
-                            'max' => 'O desconto não pode ser maior que 100%',
+                            'max' => 'The discount cannot be greater than 100%',
                         ])
                         ->required(),
 
                     TextInput::make('max_redemptions')
-                        ->label('Quantidade de Cupons')
+                        ->label('Number of Coupons')
                         ->numeric(),
 
                 ])->columns(5),
 
-                Fieldset::make('Código Promocional')
+                Fieldset::make('Promotional Code')
                 ->schema([
                     DateTimePicker::make('redeem_by')
-                        ->label('Data de Expiração')
+                        ->label('Expiration Date')
                         ->displayFormat('d/m/Y H:i:s'),
 
                     Select::make('duration')
-                        ->label('Duração')
+                        ->label('Duration')
                         ->options(PromotionDurationEnum::class)
                         ->reactive()
                         ->required(),
 
                     TextInput::make('duration_in_months')
-                        ->label('Duração em Meses')
+                        ->label('Duration in Months')
                         ->hidden(fn ($get) => $get('duration') != 'repeating')
                         ->numeric(),
 
@@ -98,31 +98,31 @@ class CouponResource extends Resource
         return $table
             ->columns([
                 TextColumn::make('coupon_code')
-                    ->label('Código Cupom')
+                    ->label('Coupon Code')
                     ->alignCenter()
                     ->searchable(),
 
                 TextColumn::make('name')
-                    ->label('Nome para o cupom')
+                    ->label('Coupon name')
                     ->searchable(),
 
                 TextColumn::make('duration')
-                    ->label('Duração')
+                    ->label('Duration')
                     ->searchable(),
 
                 TextColumn::make('duration_in_months')
-                    ->label('Duração em Meses')
+                    ->label('Duration in Months')
                     ->alignCenter()
                     ->numeric()
                     ->sortable(),
 
                 TextColumn::make('percent_off')
-                    ->label('Percentual de Desconto')
+                    ->label('Discount Percentage')
                     ->alignCenter()
                     ->searchable(),
 
                 TextColumn::make('max_redemptions')
-                    ->label('Quantidade de Cupons')
+                    ->label('Number of Coupons')
                     ->alignCenter()
                     ->numeric()
                     ->sortable(),

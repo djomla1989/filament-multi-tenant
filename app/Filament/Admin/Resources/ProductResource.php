@@ -21,13 +21,13 @@ class ProductResource extends Resource
 
     protected static ?string $navigationIcon = 'fas-hand-holding-dollar';
 
-    protected static ?string $navigationGroup = 'Planos';
+    protected static ?string $navigationGroup = 'Plans';
 
-    protected static ?string $navigationLabel = 'Planos';
+    protected static ?string $navigationLabel = 'Plans';
 
-    protected static ?string $modelLabel = 'Plano';
+    protected static ?string $modelLabel = 'Plan';
 
-    protected static ?string $modelLabelPlural = "Planos";
+    protected static ?string $modelLabelPlural = "Plans";
 
     protected static ?int $navigationSort = 1;
 
@@ -41,25 +41,25 @@ class ProductResource extends Resource
                 Fieldset::make('Label')
                     ->schema([
                         TextInput::make('stripe_id')
-                            ->label('Id Plano Stripe')
+                            ->label('Stripe Plan ID')
                             ->readOnly(),
 
                         TextInput::make('name')
-                            ->label('Nome do Plano')
+                            ->label('Plan Name')
                             ->required()
                             ->maxLength(255),
 
                         TextInput::make('description')
-                            ->label('Descrição do Plano')
+                            ->label('Plan Description')
                             ->required()
                             ->maxLength(255),
 
                     ])->columns(3),
 
-                Fieldset::make('Imagem do Plano')
+                Fieldset::make('Plan Image')
                 ->schema([
                     FileUpload::make('image')
-                        ->label('Imagem do Plano')
+                        ->label('Plan Image')
                         ->image()
                         ->imageEditor()
                         ->columnSpanFull(),
@@ -73,30 +73,30 @@ class ProductResource extends Resource
             ->columns([
 
                 TextColumn::make('stripe_id')
-                    ->label('Id Plano Stripe')
+                    ->label('Stripe Plan ID')
                 ->searchable(),
 
                 TextColumn::make('description')
-                    ->label('Descrição do Plano')
+                    ->label('Plan Description')
                     ->searchable(),
 
                 TextColumn::make('name')
-                    ->label('Nome do Plano')
+                    ->label('Plan Name')
                     ->searchable(),
 
                 TextColumn::make('prices_count')
-                    ->label('Preços Cadastrados')
+                    ->label('Registered Prices')
                     ->alignCenter()
                     ->sortable()
                     ->getStateUsing(fn ($record) => (string) $record->prices()->count()),
 
                 TextColumn::make('features_count')
-                    ->label('Características')
+                    ->label('Features')
                     ->alignCenter()
                     ->getStateUsing(fn ($record) => (string) $record->product_features()->where('is_active', true)->count()),
 
                 ToggleColumn::make('is_active')
-                    ->label('Ativo')
+                    ->label('Active')
                     ->alignCenter(),
 
                 TextColumn::make('created_at')
@@ -124,8 +124,8 @@ class ProductResource extends Resource
                             $deleteStripeProductService->execute($record);
 
                             Notification::make()
-                                ->title('Produto Excluído')
-                                ->body('Produto excluído com sucesso!')
+                                ->title('Product Deleted')
+                                ->body('Product deleted successfully!')
                                 ->success()
                                 ->send();
 

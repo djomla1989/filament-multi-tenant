@@ -22,7 +22,7 @@ class OrganizationResource extends Resource
 
     protected static ?string $navigationIcon = 'heroicon-o-building-office-2';
 
-    protected static ?string $navigationGroup = 'Administração';
+    protected static ?string $navigationGroup = 'Administration';
 
     protected static ?string $navigationLabel = 'Tenant';
 
@@ -41,10 +41,10 @@ class OrganizationResource extends Resource
     {
         return $form
             ->schema([
-                Fieldset::make('Dados da Empresa')
+                                    Fieldset::make('Company Information')
                     ->schema([
                         TextInput::make('name')
-                            ->label('Nome da Empresa')
+                            ->label('Company Name')
                             ->required()
                             ->unique(ignoreRecord: true)
                             ->live(onBlur: true)
@@ -52,74 +52,74 @@ class OrganizationResource extends Resource
                                 $set('slug', Str::slug($state));
                             })
                             ->validationMessages([
-                                'unique' => 'Empresa ja cadastrada.',
+                                'unique' => 'Company already registered.',
                             ])
                             ->maxLength(255),
 
                         Document::make('document_number')
-                            ->label('Documento da Empresa (CPF ou CNPJ)')
+                            ->label('Company Document (CPF or CNPJ)')
                             ->validation(false)
                             ->unique(ignoreRecord: true)
                             ->required()
                             ->dynamic()
                             ->validationMessages([
-                                'unique' => 'Documento já cadastrado.',
+                                'unique' => 'Document already registered.',
                             ]),
 
                         TextInput::make('slug')
-                            ->label('URL da Empresa')
+                            ->label('Company URL')
                             ->readonly(),
 
                         TextInput::make('stripe_id')
-                            ->label('Id Cliente Stripe')
+                            ->label('Stripe Customer ID')
                             ->readOnly()
                             ->maxLength(255),
 
                     ])->columns(3),
 
-                Fieldset::make('Dados de Contato')
+                                    Fieldset::make('Contact Information')
                     ->schema([
                         TextInput::make('email')
-                            ->label('E-mail Empresa')
+                            ->label('Company Email')
                             ->unique(ignoreRecord: true)
                             ->required()
                             ->validationMessages([
-                                'unique' => 'E-mail já cadastrado.',
+                                'unique' => 'Email already registered.',
                             ]),
 
                         PhoneNumber::make('phone')
-                            ->label('Telefone da Empresa')
+                            ->label('Company Phone')
                             ->unique(ignoreRecord: true)
                             ->required()
                             ->mask('(99) 99999-9999')
                             ->validationMessages([
-                                'unique' => 'Telefone já cadastrado.',
+                                'unique' => 'Phone already registered.',
                             ]),
 
                     ])->columns(2),
 
-                Fieldset::make('Informações do Cartão')
+                                    Fieldset::make('Card Information')
                     ->schema([
                         Grid::make(5)->schema([
 
                             TextInput::make('pm_type')
-                                ->label('Tipo de Pagamento')
+                                ->label('Payment Type')
                                 ->readonly(),
 
                             TextInput::make('pm_last_four')
-                                ->label('Últimos 4 Dígitos')
+                                ->label('Last 4 Digits')
                                 ->readonly(),
 
                             TextInput::make('card_exp_month')
-                                ->label('Mês de Expiração')
+                                ->label('Expiration Month')
                                 ->readonly(),
 
                             TextInput::make('card_exp_year')
-                                ->label('Ano de Expiração')
+                                ->label('Expiration Year')
                                 ->readonly(),
 
                             TextInput::make('card_country')
-                                ->label('País do Cartão')
+                                ->label('Card Country')
                                 ->readonly(),
                         ]),
                     ])->columns(1),
@@ -132,7 +132,7 @@ class OrganizationResource extends Resource
             ->columns([
 
                 TextColumn::make('latest_subscription_stripe_status')
-                    ->label('Status Subscription')
+                    ->label('Subscription Status')
                     ->getStateUsing(fn ($record) => $record->subscriptions()->latest('stripe_status')->first()?->stripe_status)
                     ->getStateUsing(function ($record) {
                         $status = $record->subscriptions()->latest('stripe_status')->first()?->stripe_status;
@@ -148,15 +148,15 @@ class OrganizationResource extends Resource
                     ->badge(),
 
                 TextColumn::make('name')
-                    ->label('Cliente')
+                    ->label('Customer')
                     ->searchable(),
 
                 TextColumn::make('slug')
-                    ->label('Url Tenant')
+                    ->label('Tenant URL')
                     ->searchable(),
 
                 TextColumn::make('planperiod')
-                    ->label('Plano Contratado')
+                    ->label('Contracted Plan')
                     ->getStateUsing(function ($record) {
                         $subscription = $record->subscriptions()->latest()->first();
 
@@ -195,7 +195,7 @@ class OrganizationResource extends Resource
                     ->alignCenter(),
 
                 TextColumn::make('planvalue')
-                    ->label('Valor do Plano')
+                    ->label('Plan Value')
                     ->getStateUsing(function ($record) {
                         $subscription = $record->subscriptions()->latest()->first();
 
@@ -203,7 +203,7 @@ class OrganizationResource extends Resource
                             $stripePrice = $subscription->stripe_price;
                             $price       = Price::where('stripe_price_id', $stripePrice)->latest()->first();
 
-                            return $price ? $price->unit_amount : 'Preço não encontrado';
+                            return $price ? $price->unit_amount : 'Price not found';
                         }
 
                         return 'N/A';
@@ -212,7 +212,7 @@ class OrganizationResource extends Resource
                     ->alignCenter(),
 
                 TextColumn::make('latest_subscription_trial_ends_at')
-                    ->label('Período de Teste')
+                    ->label('Trial Period')
                     ->getStateUsing(function ($record) {
                         $trialEndsAt = $record->subscriptions()->latest('trial_ends_at')->first()?->trial_ends_at;
 
@@ -220,10 +220,10 @@ class OrganizationResource extends Resource
                             return 'N/A';
                         }
 
-                        return now()->greaterThan($trialEndsAt) ? 'Período expirado' : $trialEndsAt;
+                        return now()->greaterThan($trialEndsAt) ? 'Expired period' : $trialEndsAt;
                     })
                     ->formatStateUsing(function ($state) {
-                        if ($state === 'N/A' || $state === 'Período expirado') {
+                        if ($state === 'N/A' || $state === 'Expired period') {
                             return $state;
                         }
 
@@ -232,7 +232,7 @@ class OrganizationResource extends Resource
                     ->alignCenter(),
 
                 TextColumn::make('latest_subscription_ends_at')
-                    ->label('Expira Em')
+                    ->label('Expires In')
                     ->getStateUsing(function ($record) {
                         $endsAt = $record->subscriptions()->latest('ends_at')->first()?->ends_at;
 
@@ -240,22 +240,22 @@ class OrganizationResource extends Resource
                             $remainingDays = now()->diffInDays($endsAt, false);
 
                             if ($remainingDays < 0) {
-                                return 'Expirado';
+                                return 'Expired';
                             }
 
-                            return sprintf('%d dias', $remainingDays);
+                            return sprintf('%d days', $remainingDays);
                         }
 
-                        return 'Não Expira';
+                        return 'Does Not Expire';
                     }),
 
                 TextColumn::make('created_at')
-                    ->label('Criado em')
+                    ->label('Created at')
                     ->dateTime('d/m/Y')
                     ->sortable(),
 
                 TextColumn::make('updated_at')
-                    ->label('Atualizado em')
+                    ->label('Updated at')
                     ->dateTime()
                     ->sortable()
                     ->toggleable(isToggledHiddenByDefault: true),

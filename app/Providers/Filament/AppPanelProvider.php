@@ -42,7 +42,7 @@ class AppPanelProvider extends PanelProvider
             ->emailVerification(EmailVerificationPrompt::class)
             ->userMenuItems([
                 'profile' => MenuItem::make()
-                    ->label('Meu Perfil')
+                    ->label('My Profile')
                     // ->label( fn() =>Auth::user()->name)
                     ->url(
                         fn () => User::find(Auth::user()->id)->hasVerifiedEmail()
@@ -75,8 +75,8 @@ class AppPanelProvider extends PanelProvider
                 'primary' => Color::Amber,
             ])
             ->navigationGroups([
-                'Administração',
-                'Suporte',
+                'Administration',
+                'Support',
 
             ])
             ->discoverResources(in: app_path('Filament/App/Resources'), for: 'App\\Filament\\App\\Resources')
@@ -107,8 +107,8 @@ class AppPanelProvider extends PanelProvider
             ->plugins([
                 FilamentEditProfilePlugin::make()
                     ->slug('my-profile')
-                    ->setTitle('Meu Perfil')
-                    ->setNavigationLabel('Meu Perfil')
+                    ->setTitle('My Profile')
+                    ->setNavigationLabel('My Profile')
                     ->setNavigationGroup('Group Profile')
                     ->setIcon('heroicon-o-user')
                     ->setSort(10)
