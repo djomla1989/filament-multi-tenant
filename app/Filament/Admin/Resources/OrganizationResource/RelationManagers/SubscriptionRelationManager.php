@@ -19,11 +19,11 @@ class SubscriptionRelationManager extends RelationManager
 {
     protected static string $relationship = 'subscriptions';
 
-    protected static ?string $modelLabel = 'Assinatura';
+    protected static ?string $modelLabel = 'Subscription';
 
-    protected static ?string $modelLabelPlural = "Assinaturas";
+    protected static ?string $modelLabelPlural = "Subscriptions";
 
-    protected static ?string $title = 'Subscrições do Tenant';
+    protected static ?string $title = 'Subscription';
 
     public function table(Table $table): Table
     {
@@ -44,7 +44,7 @@ class SubscriptionRelationManager extends RelationManager
                     ->label('Id Subscription'),
 
                 TextColumn::make('stripe_period')
-                    ->label('Tipo do Plano')
+                    ->label('Plan Type')
                     ->getStateUsing(function ($record) {
                         // Acessa o preço relacionado via o relacionamento definido
                         return $record->price->interval;
@@ -53,41 +53,41 @@ class SubscriptionRelationManager extends RelationManager
                     ->sortable(),
 
                 TextColumn::make('stripe_price')
-                    ->label('Valor do Plano')
+                    ->label('Plan Value')
                     ->getStateUsing(function ($record) {
                         // Acessa o preço relacionado via o relacionamento definido
                         return $record->price->unit_amount;
                     })
-                    ->money('brl')
+                    ->money('eur')
                     ->alignCenter()
                     ->sortable(),
 
                 TextColumn::make('ends_at')
-                    ->label('Expira em')
+                    ->label('Expires At')
                     ->alignCenter()
                     ->dateTime('d/m/Y H:m:s'),
 
                 TextColumn::make('remaining_time')
-                    ->label('Tempo Restante')
+                    ->label('Remaining Time')
                     ->getStateUsing(function ($record) {
                         $endsAt = $record->ends_at ? Carbon::parse($record->ends_at) : null;
 
                         if (!$endsAt) {
-                            return 'Sem data definida';
+                            return 'No date set';
                         }
 
                         $now = now();
 
                         // Verifica se o plano já expirou
                         if ($now > $endsAt) {
-                            return 'Expirado';
+                            return 'Expired';
                         }
 
                         // Calcula a diferença total em dias e horas
                         $remainingDays  = $now->diffInDays($endsAt, false);
                         $remainingHours = $now->diffInHours($endsAt) % 24;
 
-                        return sprintf('%d dias e %02d horas', $remainingDays, $remainingHours);
+                        return sprintf('%d days and %02d hours', $remainingDays, $remainingHours);
                     })
                     ->alignCenter(),
 

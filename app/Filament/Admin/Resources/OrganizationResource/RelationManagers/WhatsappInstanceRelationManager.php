@@ -20,77 +20,77 @@ class WhatsappInstanceRelationManager extends RelationManager
 {
     protected static string $relationship = 'whatsappInstances';
 
-    protected static ?string $modelLabel = 'Instância do WhatsApp';
+    protected static ?string $modelLabel = 'WhatsApp';
 
-    protected static ?string $modelLabelPlural = "Instâncias do WhatsApp";
+    protected static ?string $modelLabelPlural = "WhatsApp";
 
-    protected static ?string $title = 'Instâncias do WhatsApp';
+    protected static ?string $title = 'WhatsApp';
 
     public function form(Form $form): Form
     {
         return $form
            ->schema([
-               Section::make('Dados da Instância')
+               Section::make('Instance Data')
                    ->schema([
 
                        TextInput::make('name')
-                           ->label('Nome da Instância')
+                           ->label('Instance Name')
                            ->unique(WhatsappInstance::class, 'name', ignoreRecord: true)
                            ->default(fn () => Filament::getTenant()?->slug ?? '')
                            ->required()
                            ->prefixIcon('fas-id-card')
                            ->validationMessages([
-                               'unique' => 'Nome da instância já cadastrada.',
+                               'unique' => 'Name of the instance already registered.',
                            ])
                            ->maxLength(20),
 
                        PhoneNumber::make('number')
-                           ->label('Número WhatsApp')
+                           ->label('WhatsApp Number')
                            ->unique(WhatsappInstance::class, 'number', ignoreRecord: true)
                            ->mask('+55 (99) 99999-9999')
                            ->placeholder('+55 (99) 99999-9999')
                            ->required()
                            ->prefixIcon('fab-whatsapp')
                            ->validationMessages([
-                               'unique' => 'Número já cadastrado.',
+                               'unique' => 'Number already registered.',
                            ]),
 
                    ])->columns(2),
 
-               Section::make('Dados da Instância')
+                                  Section::make('Instance Settings')
                    ->schema([
                        ToggleButtons::make('groups_ignore')
-                           ->label('Ignorar Grupos')
+                           ->label('Ignore Groups')
                            ->inline()
                            ->boolean()
                            ->required(),
 
                        ToggleButtons::make('always_online')
-                           ->label('Sempre Online')
+                           ->label('Always Online')
                            ->inline()
                            ->boolean()
                            ->required(),
 
                        ToggleButtons::make('read_messages')
-                           ->label('Mensagens como Lidas')
+                           ->label('Mark Messages as Read')
                            ->inline()
                            ->boolean()
                            ->required(),
 
                        ToggleButtons::make('read_status')
-                           ->label('Status como Lido')
+                           ->label('Mark Status as Read')
                            ->inline()
                            ->boolean()
                            ->required(),
 
                        ToggleButtons::make('sync_full_history')
-                           ->label('Sincronizar Histórico')
+                           ->label('Sync History')
                            ->inline()
                            ->boolean()
                            ->required(),
 
                        ToggleButtons::make('reject_call')
-                           ->label('Rejeitar Chamadas')
+                           ->label('Reject Calls')
                            ->inline()
                            ->boolean()
                            ->live()
@@ -98,7 +98,7 @@ class WhatsappInstanceRelationManager extends RelationManager
                            ->required(),
 
                        TextInput::make('msg_call')
-                           ->label('Mensagem para Chamadas Rejeitadas')
+                           ->label('Message for Rejected Calls')
                            ->required()
                            ->hidden(fn ($get) => $get('reject_call') == false)
                            ->maxLength(255),
@@ -112,7 +112,7 @@ class WhatsappInstanceRelationManager extends RelationManager
         return $table
               ->columns([
                   ImageColumn::make('profile_picture_url')
-                      ->label('Imagem de Perfil')
+                      ->label('Profile Picture')
                       ->alignCenter()
                       ->circular()
                       ->getStateUsing(fn ($record) => $record->profile_picture_url ?: 'https://www.cidademarketing.com.br/marketing/wp-content/uploads/2018/12/whatsapp-640x640.png'),
@@ -124,15 +124,15 @@ class WhatsappInstanceRelationManager extends RelationManager
                       ->searchable(),
 
                   TextColumn::make('name')
-                      ->label('Nome da Instância')
+                      ->label('Instance Name')
                       ->searchable(),
 
                   TextColumn::make('number')
-                      ->label('Número')
+                      ->label('Number')
                       ->searchable(),
 
                   TextColumn::make('instance_id')
-                      ->label('ID da Instância')
+                      ->label('Instance ID')
                       ->searchable(),
 
                   TextColumn::make('created_at')
@@ -158,9 +158,9 @@ class WhatsappInstanceRelationManager extends RelationManager
                       ->modalSubmitAction(false)
                       ->modalCancelAction(
                           \Filament\Actions\Action::make('close')
-                              ->label('FECHAR')
-                              ->color('danger') // Cores: primary, secondary, success, danger, warning, gray
-                              ->extraAttributes(['class' => 'w-full']) // Largura total
+                              ->label('CLOSE')
+                              ->color('danger') // Colors: primary, secondary, success, danger, warning, gray
+                              ->extraAttributes(['class' => 'w-full']) // Full width
                               ->close()
                       )
                       ->modalWidth('md') // ou sm, lg, xl, 2xl, 3xl, 4xl, 5xl, 6xl, 7xl
@@ -170,7 +170,7 @@ class WhatsappInstanceRelationManager extends RelationManager
 
                   ActionGroup::make([
                       Action::make('RestartInstance')
-                          ->label('Reiniciar Instância')
+                          ->label('Restart Instance')
                           ->hidden(fn ($record) => $record->status->value === 'close')
                           ->icon('fas-rotate-right')
                           ->color('warning')
@@ -180,12 +180,12 @@ class WhatsappInstanceRelationManager extends RelationManager
 
                               if (isset($response['error'])) {
                                   Notification::make()
-                                      ->title('Erro ao reiniciar')
+                                      ->title('Error restarting')
                                       ->danger()
                                       ->send();
                               } else {
                                   Notification::make()
-                                      ->title('Instância reiniciada')
+                                      ->title('Instance restarted')
                                       ->success()
                                       ->send();
                               }
@@ -194,7 +194,7 @@ class WhatsappInstanceRelationManager extends RelationManager
 
                       Action::make('LogoutInstance')
                           ->hidden(fn ($record) => $record->status->value !== 'open')
-                          ->label('Desconectar Instância')
+                          ->label('Disconnect Instance')
                           ->icon('fas-sign-out-alt')
                           ->color('danger')
                           ->action(function ($record, $livewire) {
@@ -203,13 +203,13 @@ class WhatsappInstanceRelationManager extends RelationManager
 
                               if (!empty($response['error'])) {
                                   Notification::make()
-                                      ->title('Erro ao desconectar')
+                                      ->title('Error disconnecting')
                                       ->danger()
                                       ->send();
                               } else {
                                   Notification::make()
-                                      ->title('Instância desconectada')
-                                      ->body('Faça login novamente e escaneie o QR Code')
+                                      ->title('Instance disconnected')
+                                      ->body('Log in again and scan the QR Code')
                                       ->success()
                                       ->send();
                               }
@@ -218,7 +218,7 @@ class WhatsappInstanceRelationManager extends RelationManager
 
                       Action::make('ConectInstance')
                           ->hidden(fn ($record) => $record->status->value === 'open')
-                          ->label('Conectar Instância')
+                          ->label('Connect Instance')
                           ->icon('fas-sign-in-alt')
                           ->color('info')
                           ->action(function ($record, $livewire) {
@@ -227,13 +227,13 @@ class WhatsappInstanceRelationManager extends RelationManager
 
                               if (isset($response['error'])) {
                                   Notification::make()
-                                      ->title('Erro ao reconectar')
+                                      ->title('Error reconnecting')
                                       ->danger()
                                       ->send();
                               } else {
                                   Notification::make()
-                                      ->title('Instância reconectada')
-                                      ->body('Leia o QRcode para Ativar Sincronização dos dados')
+                                      ->title('Instance reconnected')
+                                      ->body('Scan the QR code to activate data synchronization')
                                       ->success()
                                       ->send();
                               }
@@ -241,7 +241,7 @@ class WhatsappInstanceRelationManager extends RelationManager
                           }),
 
                       Action::make('syncInstance')
-                          ->label('Sincronizar Dados')
+                          ->label('Sync Data')
                           ->icon('fas-sync')
                           ->color('info')
                           ->action(function ($record, $livewire) {
@@ -250,13 +250,13 @@ class WhatsappInstanceRelationManager extends RelationManager
 
                               if (isset($response['error'])) {
                                   Notification::make()
-                                      ->title('Erro ao sincronizar dados')
+                                      ->title('Error synchronizing data')
                                       ->danger()
                                       ->send();
                               } else {
                                   Notification::make()
-                                      ->title('Instância sincronizada')
-                                      ->body('Dados sincronizados com sucesso')
+                                      ->title('Instance synchronized')
+                                      ->body('Data synchronized successfully')
                                       ->success()
                                       ->send();
                               }
@@ -265,27 +265,27 @@ class WhatsappInstanceRelationManager extends RelationManager
                               $livewire->dispatch('refresh');
                           }),
 
-                      Action::make('Enviar Mensagem')
+                                                Action::make('Send Message')
                           ->requiresConfirmation()
                           ->hidden(fn ($record) => $record->status->value !== 'open')
                           ->form([
-                              Fieldset::make('Envie sua mensagem')
+                              Fieldset::make('Send your message')
                                   ->schema([
                                       PhoneNumber::make('number_whatsapp')
-                                          ->label('Número WhatsApp')
+                                          ->label('WhatsApp Number')
                                           ->mask('+55 (99) 99999-9999')
                                           ->placeholder('+55 (99) 99999-9999')
                                           ->required()
                                           ->prefixIcon('fab-whatsapp'),
 
                                       TextInput::make('message')
-                                          ->label('Mensagem'),
+                                          ->label('Message'),
 
                                   ])->columns(1),
                           ])
 
-                          ->modalHeading('Enviar Mensagem')
-                          ->modalDescription('Envie uma de teste para validar o serviço')
+                          ->modalHeading('Send Message')
+                          ->modalDescription('Send a test message to validate the service')
                           ->color('success')
                           ->icon('fab-whatsapp')
                           ->action(function (Action $action, $record, array $data, $livewire) {
@@ -294,14 +294,14 @@ class WhatsappInstanceRelationManager extends RelationManager
                                   $service->sendMessage($record->name, $data);
 
                                   Notification::make()
-                                      ->title('Mensagem enviada')
-                                      ->body('Mensagem enviada com Sucesso')
+                                      ->title('Message sent')
+                                      ->body('Message sent successfully')
                                       ->success()
                                       ->send();
                               } catch (\Exception $e) {
                                   Notification::make()
-                                      ->title('Erro ao enviar mensagem')
-                                      ->body('Ocorreu um erro ao enviar mensagem: ' . $e->getMessage())
+                                      ->title('Error sending message')
+                                      ->body('An error occurred while sending message: ' . $e->getMessage())
                                       ->danger()
                                       ->send();
                               }

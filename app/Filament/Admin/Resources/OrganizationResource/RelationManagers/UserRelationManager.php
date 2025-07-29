@@ -19,20 +19,20 @@ class UserRelationManager extends RelationManager
 {
     protected static string $relationship = 'users';
 
-    protected static ?string $modelLabel = 'Usuário';
+    protected static ?string $modelLabel = 'Users';
 
-    protected static ?string $modelLabelPlural = "Usuários";
+    protected static ?string $modelLabelPlural = "Users";
 
-    protected static ?string $title = 'Usuários do Tenant';
+    protected static ?string $title = 'Organization Users';
 
     public function form(Form $form): Form
     {
         return $form
             ->schema([
-                Fieldset::make('Dados do Usuário')
+                Fieldset::make('User Data')
                     ->schema([
                         TextInput::make('name')
-                            ->label('Nome Usuário')
+                            ->label('Username')
                             ->required()
                             ->maxLength(255),
 
@@ -44,19 +44,19 @@ class UserRelationManager extends RelationManager
                             ->maxLength(255),
                     ])->columns(2),
 
-                Fieldset::make('Senha')
+                Fieldset::make('password')
                     ->visible(fn ($livewire) => $livewire->mountedTableActionRecord === null)
                     ->schema([
 
                         TextInput::make('password')
                             ->password()
-                            ->label('Senha')
+                            ->label('Password')
                             // Exibe apenas ao criar
                             ->required(fn ($livewire) => $livewire->mountedTableActionRecord === null), // Requerido apenas ao criar
 
                     ])->columns(2),
 
-                Fieldset::make('Sistema')
+                Fieldset::make('System')
                     ->schema([
                         Toggle::make('is_admin')
                             ->label('Administrador')
@@ -85,7 +85,7 @@ class UserRelationManager extends RelationManager
                     ->alignCenter(),
 
                 TextColumn::make('name')
-                    ->label('Nome'),
+                    ->label('Name'),
 
                 TextColumn::make('email')
                     ->label('E-mail'),
@@ -95,13 +95,13 @@ class UserRelationManager extends RelationManager
                     ->label('Administrador'),
 
                 TextColumn::make('created_at')
-                    ->label('Criado em')
+                    ->label('Created at')
                     ->dateTime('d/m/Y H:m:s')
                     ->alignCenter()
                     ->sortable(),
 
                 TextColumn::make('email_verified_at')
-                    ->label('Ativado em')
+                    ->label('Verified at')
                     ->dateTime('d/m/Y H:m:s')
                     ->alignCenter()
                     ->sortable(),
@@ -126,7 +126,7 @@ class UserRelationManager extends RelationManager
                     EditAction::make()
                         ->color('secondary'),
                     DeleteAction::make(),
-                    Action::make('Resetar Senha')
+                    Action::make('Reset Password')
                         ->requiresConfirmation()
                         ->action(function (User $user) {
                             $newPassword = Str::random(8);
@@ -138,8 +138,8 @@ class UserRelationManager extends RelationManager
                             Mail::to($user->email)->queue(new PasswordResetMail($newPassword, $user->name));
 
                             Notification::make()
-                                ->title('Senha Alterada com Sucesso')
-                                ->body('Um Email foi enviado para o usuário com a nova senha')
+                                ->title('Password Changed Successfully')
+                                ->body('An email has been sent to the user with the new password.')
                                 ->success()
                                 ->send();
                         })

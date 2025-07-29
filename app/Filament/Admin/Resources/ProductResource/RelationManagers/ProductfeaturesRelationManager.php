@@ -13,29 +13,29 @@ class ProductfeaturesRelationManager extends RelationManager
 {
     protected static string $relationship = 'product_features';
 
-    protected static ?string $modelLabel = 'Caracteristica do Plano';
+    protected static ?string $modelLabel = 'Plan Feature';
 
-    protected static ?string $modelLabelPlural = "Caracteristicas do Plano";
+    protected static ?string $modelLabelPlural = "Plan Features";
 
-    protected static ?string $title = 'Caracteristicas do Plano';
+    protected static ?string $title = 'Plan Features';
 
     public function form(Form $form): Form
     {
         return $form
             ->schema([
 
-                Fieldset::make('Característica')
+                Fieldset::make('Feature')
                 ->schema([
                     TextInput::make('name')
-                    ->label('Nome da Característica')
+                    ->label('Feature Name')
                     ->required()
                     ->maxLength(255),
                 ])->columns(1),
 
-                Fieldset::make('Descrição da Característica')
+                Fieldset::make('Feature Description')
                 ->schema([
                     Textarea::make('description')
-                    ->label('Descrição da Característica')
+                    ->label('Feature Description')
                     ->required()
                     ->maxLength(255),
                 ])->columns(1),
@@ -50,14 +50,14 @@ class ProductfeaturesRelationManager extends RelationManager
             ->recordTitleAttribute('name')
             ->columns([
                 TextColumn::make('name')
-                    ->label('Nome da Característica')
+                    ->label('Feature Name')
                     ->searchable(),
 
                 TextColumn::make('description')
-                    ->label('Descrição da Característica'),
+                    ->label('Feature Description'),
 
                 ToggleColumn::make('is_active')
-                    ->label('Ativo para cliente')
+                    ->label('Active for Client')
                     ->alignCenter(),
             ])
             ->filters([

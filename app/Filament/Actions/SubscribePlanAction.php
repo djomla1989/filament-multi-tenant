@@ -37,26 +37,26 @@ class SubscribePlanAction extends Action
 
         $this->form([
             RadioGroup::make('billing_period')
-                ->label(__('Selecione o seu plano'))
+                ->label(__('Select your plan'))
                 ->options($this->getBilledPeriods())
                 ->default(array_key_first($this->getBilledPeriods()))
                 ->columnSpanFull()
                 ->badges([
-                    'year' => __('Melhor Valor'),
+                    'year' => __('Best Value'),
                 ])
                 ->required(),
         ]);
 
         $this->registerModalActions([
             Action::make('checkout')
-                ->label(__('Assinar Agora!'))
+                ->label(__('Subscribe Now!'))
                 ->size('xl')
                 ->extraAttributes(['class' => 'w-full'])
                 ->action(function (Action $action) {
                     $actions       = $action->getLivewire()->mountedActionsData;
                     $billingPeriod = data_get(Arr::first($actions), 'billing_period');
 
-                    // Chama a função que cria a sessão de checkout e redireciona o usuário
+                    // Calls the function that creates the checkout session and redirects the user
                     $this->checkoutUrl($billingPeriod);
                 }),
         ]);
@@ -92,7 +92,7 @@ class SubscribePlanAction extends Action
     }
 
     /**
-     * Retorna os períodos de cobrança disponíveis a partir dos dados carregados.
+     * Returns the available billing periods from the loaded data.
      *
      * @return array
      */
@@ -112,57 +112,57 @@ class SubscribePlanAction extends Action
     }
 
     /**
-     * Cria uma sessão de checkout na Stripe e redireciona o usuário.
+     * Creates a checkout session in Stripe and redirects the user.
      *
      * @param string $billingPeriod
      * @return void
      */
     protected function checkoutUrl(string $billingPeriod): void
     {
-        // Obtém a organização (tenant) atual
+        // Gets the current organization (tenant)
 
         $organization = tenant(Organization::class);
 
         if (!$organization->stripe_id) {
-            throw new \Exception('A organização não possui um ID do Stripe associado.');
+            throw new \Exception('The organization does not have an associated Stripe ID.');
         }
 
-        // Configura a API Key da Stripe
+        // Configure the Stripe API Key
         Stripe::setApiKey(env('STRIPE_SECRET'));
 
-        // Obtém o produto e o preço com base no período de cobrança selecionado
+        // Get the product and price based on the selected billing period
         $products = StripeDataLoader::getProductsData();
         $priceId  = null;
 
         foreach ($products as $product) {
             foreach ($product['prices'] as $price) {
                 if ($price['interval'] === $billingPeriod) {
-                    $priceId = $price['stripe_price_id']; // Garante que está pegando o ID do preço
+                    $priceId = $price['stripe_price_id']; // Ensures it's getting the price ID
 
                     break 2;
                 }
             }
         }
 
-        // Cria a sessão de checkout
+        // Create the checkout session
         $checkoutSession = Session::create([
 
             'payment_method_types' => ['card'],
 
             'mode'       => 'subscription',
-            'customer'   => $organization->stripe_id, // Certifique-se de que a organização tenha um stripe_id
+            'customer'   => $organization->stripe_id, // Make sure the organization has a stripe_id
             'line_items' => [
                 [
-                    'price'    => $priceId, // Aqui vai o ID do objeto de preço
+                    'price'    => $priceId, // Here goes the price object ID
                     'quantity' => 1,
                 ],
             ],
-            'success_url' => url('/app'), // Redireciona para o dashboard do Filament
-            'cancel_url'  => url('/app'),  // Redireciona para o dashboard caso o pagamento seja cancelado
+            'success_url' => url('/app'), // Redirects to the Filament dashboard
+            'cancel_url'  => url('/app'),  // Redirects to the dashboard if payment is canceled
 
         ]);
 
-        // Redireciona para a URL de checkout
+        // Redirect to the checkout URL
         redirect()->away($checkoutSession->url);
     }
 

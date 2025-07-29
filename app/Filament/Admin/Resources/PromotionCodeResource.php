@@ -19,13 +19,13 @@ class PromotionCodeResource extends Resource
 
     protected static ?string $navigationIcon = 'fas-comment-dollar';
 
-    protected static ?string $navigationGroup = 'Planos';
+    protected static ?string $navigationGroup = 'Plans';
 
-    protected static ?string $navigationLabel = 'Código Promocional';
+    protected static ?string $navigationLabel = 'Promotional Code';
 
-    protected static ?string $modelLabel = 'Código';
+    protected static ?string $modelLabel = 'Code';
 
-    protected static ?string $modelLabelPlural = "Códigos Promocionais";
+    protected static ?string $modelLabelPlural = "Promotional Codes";
 
     protected static ?int $navigationSort = 3;
 
@@ -36,11 +36,11 @@ class PromotionCodeResource extends Resource
         return $form
             ->schema([
 
-                Fieldset::make('Código Promocional')
+                                    Fieldset::make('Promotional Code')
                     ->schema([
 
                         TextInput::make('code')
-                             ->label('Código')
+                             ->label('Code')
                              ->required()
                              ->suffixAction(
                                  Action::make('codeGenerator')
@@ -52,22 +52,22 @@ class PromotionCodeResource extends Resource
                              ),
 
                         DateTimePicker::make('expires_at')
-                            ->label('Data de Expiração')
+                            ->label('Expiration Date')
                             ->displayFormat('d/m/Y H:i:s')
                             ->required(),
 
                         DateTimePicker::make('redeem_by')
-                            ->label('Data limite de Resgate')
+                            ->label('Redemption Deadline')
                             ->displayFormat('d/m/Y H:i:s')
                             ->rule('after_or_equal:expires_at')
                             ->validationAttribute('redeem_by')
                             ->validationMessages([
-                                'after_or_equal' => 'Data de resgate inferior a data de expiração do Cupom',
+                                'after_or_equal' => 'Redemption date is earlier than the coupon expiration date',
                             ])
                             ->required(),
 
                         TextInput::make('max_redemptions')
-                            ->label('Quantidade de Códigos')
+                            ->label('Number of Codes')
                             ->numeric(),
 
                     ])->columns(4),
@@ -76,24 +76,24 @@ class PromotionCodeResource extends Resource
                 ->schema([
 
                     TextInput::make('percent_off')
-                        ->label('Percentual de Desconto')
+                        ->label('Discount Percentage')
                         ->prefixIcon('fas-percent')
                         ->numeric()
                         ->rule('max:100')
                         ->validationAttribute('percent_off')
                         ->validationMessages([
-                            'max' => 'O desconto não pode ser maior que 100%',
+                            'max' => 'The discount cannot be greater than 100%',
                         ])
                         ->required(),
 
                     Select::make('duration')
-                        ->label('Duração')
+                        ->label('Duration')
                         ->options(PromotionDurationEnum::class)
                         ->reactive()
                         ->required(),
 
                     TextInput::make('duration_in_months')
-                        ->label('Duração em Meses')
+                        ->label('Duration in Months')
                         ->hidden(fn ($get) => $get('duration') != 'repeating')
                         ->numeric(),
 
@@ -103,21 +103,21 @@ class PromotionCodeResource extends Resource
                 ->schema([
 
                     Toggle::make('valid')
-                        ->label('Deseja ativar o Cupom?')
+                        ->label('Do you want to activate the Coupon?')
                         ->default(true)
                         ->onColor('success')
                         ->offColor('info')
                         ->required(),
 
                     Toggle::make('first_time_transaction')
-                        ->label('Valido apenas na Primeira Transação?')
+                        ->label('Valid only for First Transaction?')
                         ->default(false)
                         ->onColor('success')
                         ->offColor('info')
                         ->required(),
 
                     Toggle::make('customer_optional')
-                        ->label('Cupom valido apenas para um cliente?')
+                        ->label('Coupon valid only for one customer?')
                         ->onColor('success')
                         ->offColor('info')
                         ->reactive()
@@ -125,14 +125,14 @@ class PromotionCodeResource extends Resource
 
                 ])->columns(3),
 
-                Fieldset::make('Cliente')
+                Fieldset::make('Customer')
                 ->hidden(fn ($get) => $get('customer_optional') === false)
                 ->schema([
 
                     Select::make('customer')
                         ->reactive()
                         ->requiredUnless('customer_optional', true)
-                        ->label('Selecione o Cliente que receberá o Cupom')
+                        ->label('Select the Customer who will receive the Coupon')
                         ->options(function () {
                             return Organization::all()->pluck('name', 'stripe_id');
                         }),

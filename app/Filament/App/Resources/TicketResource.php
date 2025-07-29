@@ -38,42 +38,42 @@ class TicketResource extends Resource
     {
         return $form
             ->schema([
-                Fieldset::make('Classificação')
+                Fieldset::make('Classification')
                     ->schema([
                         TextInput::make('title')
-                            ->label('Assunto')
+                            ->label('Subject')
                             ->required()
                             ->maxLength(50),
 
                         Select::make('type')
-                            ->label('Tipo')
+                            ->label('Type')
                             ->options(TicketTypeEnum::class)
                             ->searchable()
                             ->required(),
 
                         Select::make('priority')
-                            ->label('Prioridade')
+                            ->label('Priority')
                             ->options(TicketPriorityEnum::class)
                             ->searchable()
                             ->required(),
                     ])->columns(3),
 
-                Fieldset::make('Detalhes do Ticket')
+                Fieldset::make('Ticket Details')
                     ->schema([
                         RichEditor::make('description')
-                            ->label('Detalhamento')
+                            ->label('Description')
                             ->required()
                             ->columnSpanFull(),
                     ]),
 
-                Fieldset::make('Anexos')
+                Fieldset::make('Attachments')
                     ->schema([
                         FileUpload::make('file')
                             ->multiple()
-                            ->label('Arquivos'),
+                            ->label('Files'),
 
                         FileUpload::make('image_path')
-                            ->label('Imagens')
+                            ->label('Images')
                             ->image()
                             ->imageEditor(),
 
@@ -86,17 +86,17 @@ class TicketResource extends Resource
         return $table
             ->columns([
                 TextColumn::make('id')
-                    ->label('Solicitação')
+                    ->label('Request')
                     ->alignCenter()
                     ->sortable(),
 
                 TextColumn::make('user.name')
-                    ->label('Solicitante')
+                    ->label('Requester')
                     ->numeric()
                     ->sortable(),
 
                 TextColumn::make('title')
-                    ->label('Assunto')
+                    ->label('Subject')
                     ->searchable(),
 
                 TextColumn::make('status')
@@ -106,38 +106,38 @@ class TicketResource extends Resource
                     ->sortable(),
 
                 TextColumn::make('priority')
-                    ->label('Prioridade')
+                    ->label('Priority')
                     ->alignCenter()
                     ->badge()
                     ->sortable(),
 
                 TextColumn::make('type')
-                    ->label('Tipo')
+                    ->label('Type')
                     ->alignCenter()
                     ->badge()
                     ->sortable(),
 
                 TextColumn::make('lifetime')
-                    ->label('Tempo de Vida')
+                    ->label('Lifetime')
                     ->getStateUsing(function (Model $record) {
                         $createdAt = Carbon::parse($record->created_at);
                         $closedAt  = $record->closed_at ? Carbon::parse($record->closed_at) : now();
                         $diff      = $createdAt->diff($closedAt);
 
-                        return "{$diff->d} dias, {$diff->h} horas";
+                        return "{$diff->d} days, {$diff->h} hours";
 
                     })
                     ->alignCenter()
                     ->sortable(),
 
                 TextColumn::make('created_at')
-                    ->label('Criado em')
+                    ->label('Created at')
                     ->dateTime('d/m/Y H:m:s')
                     ->sortable()
                     ->toggleable(isToggledHiddenByDefault: true),
 
                 TextColumn::make('updated_at')
-                    ->label('Atualizado em')
+                    ->label('Updated at')
                     ->dateTime('d/m/Y H:m:s')
                     ->sortable()
                     ->toggleable(isToggledHiddenByDefault: true),
@@ -146,11 +146,11 @@ class TicketResource extends Resource
             ->filters([])
             ->groups([
                 Group::make('user.name')
-                    ->label('Usuário'),
+                    ->label('User'),
                 Group::make('status')
                     ->label('Status'),
                 Group::make('type')
-                    ->label('Tipo'),
+                    ->label('Type'),
             ])
 
             ->actions([
