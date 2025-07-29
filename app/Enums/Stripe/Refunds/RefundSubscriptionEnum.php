@@ -14,10 +14,10 @@ enum RefundSubscriptionEnum: string implements HasLabel, HasColor
     public function getLabel(): string
     {
         return match ($this) {
-            self::DUPLICATE                 => 'Duplicada',
-            self::FRAUDULENT                => 'Fraude',
-            self::REQUESTED_BY_CUSTOMER     => 'Solicitada pelo Cliente',
-            self::EXPIRED_UNCAPTURED_CHARGE => 'Cobrança Expirada',
+            self::DUPLICATE                 => 'Duplicate',
+            self::FRAUDULENT                => 'Fraudulent',
+            self::REQUESTED_BY_CUSTOMER     => 'Requested by Customer',
+            self::EXPIRED_UNCAPTURED_CHARGE => 'Expired Charge',
         };
     }
 

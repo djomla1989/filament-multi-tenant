@@ -15,27 +15,27 @@ class InstanceTypebotsRelationManager extends RelationManager
 {
     protected static string $relationship = 'InstanceTypebots';
 
-    protected static ?string $modelLabel = 'Robô TypeBot';
+    protected static ?string $modelLabel = 'TypeBot Bot';
 
     protected static ?string $modelLabelPlural = "TypeBots";
 
-    protected static ?string $title = 'Robôs TypeBot';
+    protected static ?string $title = 'TypeBot Bots';
 
     public function form(Form $form): Form
     {
         return $form
             ->schema([
-                Section::make('Dados Basicos do typebot')
+                Section::make('Basic Typebot Data')
                     ->schema([
 
                         TextInput::make('name')
-                            ->label('Descrição do Robô')
+                            ->label('Bot Description')
                             ->prefixIcon('fas-id-card')
                             ->required()
                             ->maxLength(255),
 
                         TextInput::make('url')
-                            ->label('URL do typebot')
+                            ->label('Typebot URL')
                             ->prefix('https://')
                             ->required()
                             ->maxLength(255),
@@ -48,11 +48,11 @@ class InstanceTypebotsRelationManager extends RelationManager
 
                     ])->columns(3),
 
-                Section::make('Dados de Disparo')
+                Section::make('Trigger Data')
                     ->schema([
 
                         Select::make('trigger_type')
-                            ->label('Tipo de Gatilho')
+                            ->label('Trigger Type')
                             ->required()
                             ->reactive()
                             ->live()
@@ -62,12 +62,12 @@ class InstanceTypebotsRelationManager extends RelationManager
                             ->hidden(fn ($get) => $get('trigger_type') != 'keyword')
                             ->required()
                             ->reactive()
-                            ->label('Operador de Gatilho')
+                            ->label('Trigger Operator')
                             ->options(TriggerOperatorEnum::class),
 
                         TextInput::make('trigger_value')
                             ->hidden(fn ($get) => !in_array($get('trigger_type'), ['advanced', 'keyword']))
-                            ->label('Valor do Gatilho')
+                            ->label('Trigger Value')
                             ->prefixIcon('fas-keyboard')
                             ->reactive()
                             ->required()
@@ -75,58 +75,58 @@ class InstanceTypebotsRelationManager extends RelationManager
 
                     ])->columns(3),
 
-                Section::make('Configurações Gerais')
+                Section::make('General Settings')
                 ->schema([
 
                     TextInput::make('expire')
-                        ->label('Expirar em minutos')
+                        ->label('Expire in minutes')
                         ->prefixIcon('fas-clock')
                         ->numeric()
                         ->required(),
 
                     TextInput::make('keyword_finish')
-                        ->label('Palavra-chave de Finalização')
+                        ->label('Finish Keyword')
                         ->prefixIcon('fas-arrow-right-from-bracket')
                         ->required()
                         ->maxLength(255),
 
                     TextInput::make('delay_message')
-                        ->label('Atraso Padrão (Milisegundos)')
+                        ->label('Default Delay (Milliseconds)')
                         ->prefixIcon('fas-clock')
                         ->required()
                         ->numeric(),
 
                     TextInput::make('unknown_message')
-                        ->label('Mensagem Desconhecida')
+                        ->label('Unknown Message')
                         ->prefixIcon('fas-question')
                         ->required()
                         ->maxLength(30),
 
                     TextInput::make('debounce_time')
-                        ->label('Tempo de Debounce')
+                        ->label('Debounce Time')
                         ->prefixIcon('fas-clock')
                         ->required()
                         ->numeric(),
 
                 ])->columns(3),
 
-                Section::make('Opções Gerais')
+                Section::make('General Options')
                 ->schema([
 
                     ToggleButtons::make('listening_from_me')
-                        ->label('Ouvindo de mim')
+                        ->label('Listening from me')
                         ->inline()
                         ->boolean()
                         ->required(),
 
                     ToggleButtons::make('stop_bot_from_me')
-                        ->label('Parar bot por mim')
+                        ->label('Stop bot by me')
                         ->inline()
                         ->boolean()
                         ->required(),
 
                     ToggleButtons::make('keep_open')
-                        ->label('Manter aberto')
+                        ->label('Keep open')
                         ->inline()
                         ->boolean()
                         ->required(),
@@ -142,19 +142,19 @@ class InstanceTypebotsRelationManager extends RelationManager
             ->columns([
 
                 TextColumn::make('name')
-                    ->label('Descrição do'),
+                    ->label('Description'),
 
                 TextColumn::make('url')
                     ->label('URL'),
 
                 TextColumn::make('type_bot')
-                    ->label('Codigo do Typebot'),
+                    ->label('Typebot Code'),
 
                 TextColumn::make('id_typebot')
-                    ->label('Id do Bot'),
+                    ->label('Bot ID'),
 
                 ToggleColumn::make('is_active')
-                    ->label('Ativo')
+                    ->label('Active')
                     ->alignCenter(),
 
             ])

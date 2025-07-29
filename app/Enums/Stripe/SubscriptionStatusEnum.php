@@ -18,14 +18,14 @@ enum SubscriptionStatusEnum: string implements HasLabel, HasColor
     public function getLabel(): string
     {
         return match ($this) {
-            self::INCOMPLETE         => 'Em Validação',
-            self::TRIALING           => 'Período Teste',
-            self::ACTIVE             => 'Ativa',
-            self::INCOMPLETE_EXPIRED => 'Cancelado',
-            self::PAST_DUE           => 'Aguardando Pagamento',
-            self::UNPAID             => 'Cartão Inválido',
-            self::CANCELED           => 'Cancelado',
-            self::PAUSED             => 'Pausado',
+            self::INCOMPLETE         => 'Pending',
+            self::TRIALING           => 'Trialing',
+            self::ACTIVE             => 'Active',
+            self::INCOMPLETE_EXPIRED => 'Canceled',
+            self::PAST_DUE           => 'Awaiting Payment',
+            self::UNPAID             => 'Card Declined',
+            self::CANCELED           => 'Canceled',
+            self::PAUSED             => 'Paused',
 
         };
     }

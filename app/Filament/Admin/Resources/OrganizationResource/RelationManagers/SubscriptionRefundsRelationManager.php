@@ -12,11 +12,11 @@ class SubscriptionRefundsRelationManager extends RelationManager
 {
     protected static string $relationship = 'subscription_refunds';
 
-    protected static ?string $modelLabel = 'Reembolsos';
+    protected static ?string $modelLabel = 'Refund';
 
-    protected static ?string $modelLabelPlural = "Reembolsos";
+    protected static ?string $modelLabelPlural = 'Refunds';
 
-    protected static ?string $title = 'Reembolsos da Subscription';
+    protected static ?string $title = 'Subscription Refunds';
 
     public function form(Form $form): Form
     {
@@ -38,30 +38,30 @@ class SubscriptionRefundsRelationManager extends RelationManager
                     ->searchable(),
 
                 TextColumn::make('amount')
-                    ->label('Valor')
+                    ->label('Amount')
                     ->sortable()
                     ->searchable()
                     ->alignCenter()
                     ->formatStateUsing(fn ($state) => 'R$ ' . number_format($state / 100, 2, ',', '.')),
 
                 TextColumn::make('reason')
-                    ->label('Motivo')
+                    ->label('Reason')
                     ->alignCenter()
                     ->badge()
                     ->searchable(),
 
                 TextColumn::make('failure_reason')
-                    ->label('Motivo')
+                    ->label('Reason')
                     ->visible(fn ($record) => $record && $record->failure_reason !== null)
                     ->searchable(),
 
                 TextColumn::make('reference')
-                    ->label('Referência')
+                    ->label('Reference')
                     ->alignCenter()
                     ->searchable(),
 
                 TextColumn::make('created_at')
-                    ->label('Criado em')
+                    ->label('Created at')
                     ->dateTime('d/m/Y H:m:s')
                     ->alignCenter()
                     ->searchable(),
