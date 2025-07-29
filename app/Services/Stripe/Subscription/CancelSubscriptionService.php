@@ -37,16 +37,16 @@ class CancelSubscriptionService
             ]);
 
             Notification::make()
-                ->title('Assinatura Cancelada')
-                ->body('Assinatura cancelada com sucesso!')
+                ->title('Subscription Cancelled')
+                ->body('Subscription cancelled successfully!')
                 ->success()
                 ->send();
 
         } catch (\Exception $e) {
 
             Notification::make()
-                ->title('Erro ao Cancelar')
-                ->body('Ocorreu um erro ao cancelar a assinatura. Tente novamente mais tarde.')
+                ->title('Error Cancelling')
+                ->body('An error occurred while cancelling the subscription. Please try again later.')
                 ->danger()
                 ->send();
 

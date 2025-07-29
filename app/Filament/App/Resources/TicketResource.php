@@ -22,9 +22,9 @@ class TicketResource extends Resource
 
     protected static ?string $navigationIcon = 'fas-bullhorn';
 
-    protected static ?string $navigationGroup = 'Suporte';
+    protected static ?string $navigationGroup = 'Support';
 
-    protected static ?string $navigationLabel = 'Solicitações';
+    protected static ?string $navigationLabel = 'Tickets';
 
     protected static ?string $modelLabel = 'Ticket';
 

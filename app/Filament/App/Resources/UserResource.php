@@ -50,7 +50,7 @@ class UserResource extends Resource
                             ->prefixIcon('fas-envelope')
                             ->unique(User::class, 'email', ignoreRecord: true)
                             ->validationMessages([
-                                'unique' => 'E-mail já cadastrado.',
+                                'unique' => 'Email already registered.',
                             ])
                             ->required()
                             ->maxLength(255),

@@ -15,24 +15,24 @@ class StatsWebhookOverview extends BaseWidget
         $successCount = WebhookEvent::where('status', 'success')->count();
         $failureCount = WebhookEvent::where('status', 'failed')->count();
 
-        // Calcula a média de falhas sobre os sucessos, evitando divisão por zero
+        // Calculate the average failure rate over successes, avoiding division by zero
         $failureRate = $successCount > 0 ? $failureCount / $successCount : 0;
 
         return [
-            Stat::make('Webhooks com Falha', $failureCount)
+            Stat::make('Failed Webhooks', $failureCount)
                 ->description('Total')
                 ->descriptionIcon('heroicon-s-bug-ant')
                 ->color('danger')
                 ->chart([7, 3, 4, 5, 6, 3, 5, 8]),
 
-            Stat::make('Webhooks dom Sucesso', $successCount)
+            Stat::make('Successful Webhooks', $successCount)
                 ->description('Total')
                 ->descriptionIcon('heroicon-s-check-badge')
                 ->color('success')
                 ->chart([7, 3, 4, 5, 6, 3, 5, 3]),
 
-            Stat::make('Média de Falhas', number_format($failureRate, 2) . ' %')
-                ->description('Falhas / Sucesso')
+            Stat::make('Failure Rate', number_format($failureRate, 2) . ' %')
+                ->description('Failures / Successes')
                 ->color('warning')
                 ->descriptionIcon('heroicon-s-exclamation-triangle')
                 ->chart([3, 2, 1, 4, 2, 1, 3, 2]),
