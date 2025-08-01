@@ -237,11 +237,25 @@
                     <!-- Sidebar -->
                     <div class="md:col-span-1 space-y-6">
                         <!-- Customer Information -->
-                        <div class="bg-white overflow-hidden shadow-sm sm:rounded-lg">
+                        <div class="bg-white overflow-hidden shadow-sm sm:rounded-lg" x-data="{ open: false }">
                             <div class="p-6 bg-white border-b border-gray-200">
-                                <h3 class="text-lg font-semibold text-gray-800 mb-4">Customer Information</h3>
+                                <div class="flex justify-between items-center mb-4">
+                                    <h3 class="text-lg font-semibold text-gray-800">Customer Information</h3>
+                                    <button
+                                        @click="open = !open"
+                                        type="button"
+                                        class="text-sm text-indigo-600 hover:text-indigo-800 flex items-center"
+                                    >
+                                        <svg x-show="!open" class="ml-1 h-4 w-4" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor">
+                                            <path fill-rule="evenodd" d="M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z" clip-rule="evenodd" />
+                                        </svg>
+                                        <svg x-show="open" class="ml-1 h-4 w-4" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" style="display: none;">
+                                            <path fill-rule="evenodd" d="M14.707 12.707a1 1 0 01-1.414 0L10 9.414l-3.293 3.293a1 1 0 01-1.414-1.414l4-4a1 1 0 011.414 0l4 4a1 1 0 010 1.414z" clip-rule="evenodd" />
+                                        </svg>
+                                    </button>
+                                </div>
 
-                                <div class="space-y-3">
+                                <div class="space-y-3" x-show="open" style="display: none;">
                                     <div>
                                         <h4 class="text-sm font-medium text-gray-500">Name</h4>
                                         <p class="mt-1">{{ \App\Helpers\MaskHelper::maskString($workOrder->customer->name) }}</p>
@@ -266,11 +280,25 @@
 
                         <!-- Notification Preferences -->
                         @if(count($availableChannels) > 0)
-                        <div class="bg-white overflow-hidden shadow-sm sm:rounded-lg" x-data="notificationPreferences">
+                        <div class="bg-white overflow-hidden shadow-sm sm:rounded-lg" x-data="{...notificationPreferences(), open: false}">
                             <div class="p-6 bg-white border-b border-gray-200">
-                                <h3 class="text-lg font-semibold text-gray-800 mb-4">Notification Preferences</h3>
+                                <div class="flex justify-between items-center mb-4">
+                                    <h3 class="text-lg font-semibold text-gray-800">Notification Preferences</h3>
+                                    <button
+                                        @click="open = !open"
+                                        type="button"
+                                        class="text-sm text-indigo-600 hover:text-indigo-800 flex items-center"
+                                    >
+                                        <svg x-show="!open" class="ml-1 h-4 w-4" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor">
+                                            <path fill-rule="evenodd" d="M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z" clip-rule="evenodd" />
+                                        </svg>
+                                        <svg x-show="open" class="ml-1 h-4 w-4" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" style="display: none;">
+                                            <path fill-rule="evenodd" d="M14.707 12.707a1 1 0 01-1.414 0L10 9.414l-3.293 3.293a1 1 0 01-1.414-1.414l4-4a1 1 0 011.414 0l4 4a1 1 0 010 1.414z" clip-rule="evenodd" />
+                                        </svg>
+                                    </button>
+                                </div>
 
-                                <div class="space-y-4">
+                                <div class="space-y-4" x-show="open" style="display: none;">
                                     @foreach($availableChannels as $channel => $label)
                                     <div class="flex items-center justify-between">
                                         <span class="text-sm font-medium text-gray-700">{{ $label }}</span>
