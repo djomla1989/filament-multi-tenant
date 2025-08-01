@@ -60,4 +60,14 @@ class Organization extends Model
         return $this->hasMany(WhatsappInstance::class);
     }
 
+    public function workCategories(): HasMany
+    {
+        return $this->hasMany(WorkCategory::class);
+    }
+
+    public function workCategoryStatuses(): HasMany
+    {
+        return $this->hasMany(WorkCategoryStatus::class);
+    }
+
 }

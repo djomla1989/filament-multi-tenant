@@ -75,6 +75,7 @@ class AppPanelProvider extends PanelProvider
                 'primary' => Color::Amber,
             ])
             ->navigationGroups([
+                'Workspace',
                 'Administration',
                 'Support',
 
@@ -124,8 +125,9 @@ class AppPanelProvider extends PanelProvider
                     ]),
             ])
             ->tenant(Organization::class, ownershipRelationship: 'organization', slugAttribute: 'slug')
-            ->tenantRegistration(RegisterOrganization::class)
+            ->tenantRegistration(RegisterOrganization::class)//Remove this in order to disable tenant registration
             ->tenantBillingProvider(new BillingProvider())
-            ->requiresTenantSubscription();
+            //->requiresTenantSubscription()
+            ;
     }
 }
