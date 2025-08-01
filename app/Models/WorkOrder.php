@@ -19,6 +19,7 @@ class WorkOrder extends Model
         'order_number',
         'title',
         'description',
+        'notes',
         'customer_id',
         'work_category_id',
         'current_status_id',

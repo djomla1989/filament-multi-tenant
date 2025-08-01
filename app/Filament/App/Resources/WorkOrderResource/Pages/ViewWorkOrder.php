@@ -3,6 +3,7 @@
 namespace App\Filament\App\Resources\WorkOrderResource\Pages;
 
 use App\Filament\App\Resources\WorkOrderResource;
+use App\Services\WorkOrder\DynamicAttributesService;
 use App\Services\WorkOrder\WorkOrderService;
 use Filament\Actions\Action;
 use Filament\Actions\EditAction;
@@ -15,6 +16,21 @@ use Filament\Resources\Pages\ViewRecord;
 class ViewWorkOrder extends ViewRecord
 {
     protected static string $resource = WorkOrderResource::class;
+
+    protected function mutateFormDataBeforeFill(array $data): array
+    {
+        // Load customer information for display
+        if ($this->record->customer) {
+            $data['customer_name'] = $this->record->customer->name;
+            $data['customer_email'] = $this->record->customer->email;
+            $data['customer_phone'] = $this->record->customer->phone;
+        }
+
+        // Load attribute values if using dynamic attributes
+        $attributesService = app(DynamicAttributesService::class);
+        $data['attribute_values'] = $attributesService->getAttributeValuesForForm($this->record);
+        return $data;
+    }
 
     protected function getHeaderActions(): array
     {

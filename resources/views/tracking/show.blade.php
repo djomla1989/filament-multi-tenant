@@ -137,10 +137,44 @@
                                     </div>
                                     @endif
 
+                                    @if($workOrder->notes)
+                                    <div>
+                                        <h4 class="text-sm font-medium text-gray-500">Initial Notes</h4>
+                                        <p class="mt-1">{{ $workOrder->notes }}</p>
+                                    </div>
+                                    @endif
+
                                     <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
                                         <div>
                                             <h4 class="text-sm font-medium text-gray-500">Category</h4>
                                             <p class="mt-1">{{ $workOrder->workCategory->name }}</p>
+
+                                            @if($workOrder->attributeValues && $workOrder->attributeValues->count() > 0)
+                                            <div x-data="{ open: false }" class="mt-2">
+                                                <button
+                                                    @click="open = !open"
+                                                    type="button"
+                                                    class="text-sm text-indigo-600 hover:text-indigo-800 flex items-center"
+                                                >
+                                                    <span x-text="open ? 'Hide attributes' : 'Show attributes'">Show attributes</span>
+                                                    <svg x-show="!open" class="ml-1 h-4 w-4" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor">
+                                                        <path fill-rule="evenodd" d="M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z" clip-rule="evenodd" />
+                                                    </svg>
+                                                    <svg x-show="open" class="ml-1 h-4 w-4" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" style="display: none;">
+                                                        <path fill-rule="evenodd" d="M14.707 12.707a1 1 0 01-1.414 0L10 9.414l-3.293 3.293a1 1 0 01-1.414-1.414l4-4a1 1 0 011.414 0l4 4a1 1 0 010 1.414z" clip-rule="evenodd" />
+                                                    </svg>
+                                                </button>
+
+                                                <div x-show="open" class="mt-2 pl-2 border-l-2 border-indigo-200" style="display: none;">
+                                                    @foreach($workOrder->attributeValues as $attributeValue)
+                                                    <div class="mb-2">
+                                                        <h5 class="text-xs font-medium text-gray-500">{{ $attributeValue->attribute->name }}</h5>
+                                                        <p class="text-sm">{{ $attributeValue->value }}</p>
+                                                    </div>
+                                                    @endforeach
+                                                </div>
+                                            </div>
+                                            @endif
                                         </div>
 
                                         @if($workOrder->estimated_completion_date)

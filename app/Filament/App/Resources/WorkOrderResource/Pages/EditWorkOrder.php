@@ -22,6 +22,11 @@ class EditWorkOrder extends EditRecord
 
     protected function mutateFormDataBeforeFill(array $data): array
     {
+        if ($this->record->customer) {
+            $data['customer_name'] = $this->record->customer->name;
+            $data['customer_email'] = $this->record->customer->email;
+            $data['customer_phone'] = $this->record->customer->phone;
+        }
         // Load attribute values
         $attributesService = app(DynamicAttributesService::class);
         $data['attribute_values'] = $attributesService->getAttributeValuesForForm($this->record);
