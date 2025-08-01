@@ -18,6 +18,10 @@ return new class () extends Migration {
             $table->string('document_number')->unique();
             $table->string('email')->unique();
             $table->string('phone')->nullable();
+            $table->string('address')->nullable();
+            $table->string('address_number')->nullable();
+            $table->string('zip_code')->nullable();
+            $table->string('country')->nullable();
             $table->string('slug')->unique();
             $table->boolean('is_active')->default(true);
             $table->string('pm_type')->nullable();

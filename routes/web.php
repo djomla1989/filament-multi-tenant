@@ -1,6 +1,6 @@
 <?php
 
-use App\Http\Controllers\{EvolutionWebhookController, StripeWebhookController};
+use App\Http\Controllers\{EvolutionWebhookController, StripeWebhookController, WorkOrderTrackingController};
 use Illuminate\Support\Facades\Route;
 
 Route::get('/', function () {
@@ -12,3 +12,10 @@ Route::post('/stripe/webhook', [StripeWebhookController::class, 'handle']);
 
 //Rota do webhook custom evolution
 Route::post('/evolution/webhook', [EvolutionWebhookController::class, 'handle']);
+
+// Public work order tracking routes
+Route::get('/track/{trackingToken}', [WorkOrderTrackingController::class, 'show'])
+    ->name('tracking.show');
+
+Route::post('/track/{trackingToken}/notifications', [WorkOrderTrackingController::class, 'updateNotificationPreferences'])
+    ->name('tracking.update-notifications');

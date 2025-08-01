@@ -95,7 +95,34 @@ class OrganizationResource extends Resource
                             ->validationMessages([
                                 'unique' => 'Phone already registered.',
                             ]),
+                    ])->columns(2),
 
+                    Fieldset::make('Address Information')
+                    ->schema([
+                        TextInput::make('address')
+                            ->label('Street Address')
+                            ->required()
+                            ->maxLength(255),
+
+                        TextInput::make('address_number')
+                            ->label('Street Number')
+                            ->required()
+                            ->maxLength(20),
+
+                        TextInput::make('city')
+                            ->label('City')
+                            ->required()
+                            ->maxLength(255),
+
+                        TextInput::make('zip_code')
+                            ->label('ZIP/Postal Code')
+                            ->required()
+                            ->maxLength(20),
+
+                        TextInput::make('country')
+                            ->label('Country')
+                            ->required()
+                            ->maxLength(100),
                     ])->columns(2),
 
                                     Fieldset::make('Card Information')
@@ -151,9 +178,33 @@ class OrganizationResource extends Resource
                     ->label('Customer')
                     ->searchable(),
 
+                TextColumn::make('document_number')
+                    ->label('CNPJ/CPF')
+                    ->searchable(),
+
                 TextColumn::make('slug')
                     ->label('Tenant URL')
                     ->searchable(),
+
+                TextColumn::make('address')
+                    ->label('Street Address')
+                    ->toggleable(isToggledHiddenByDefault: true),
+
+                TextColumn::make('address_number')
+                    ->label('Street Number')
+                    ->toggleable(isToggledHiddenByDefault: true),
+
+                TextColumn::make('zip_code')
+                    ->label('ZIP/Postal Code')
+                    ->toggleable(isToggledHiddenByDefault: true),
+
+                TextColumn::make('country')
+                    ->label('Country')
+                    ->toggleable(isToggledHiddenByDefault: true),
+
+                TextColumn::make('phone')
+                    ->label('Phone')
+                    ->toggleable(isToggledHiddenByDefault: true),
 
                 TextColumn::make('planperiod')
                     ->label('Contracted Plan')

@@ -62,6 +62,36 @@ class RegisterOrganization extends RegisterTenant
                         'unique' => 'Document already registered.',
                     ]),
 
+                TextInput::make('address')
+                    ->label('Street Address')
+                    ->required()
+                    ->prefixIcon('fas-location-dot')
+                    ->maxLength(255),
+
+                TextInput::make('address_number')
+                    ->label('Street Number')
+                    ->required()
+                    ->prefixIcon('fas-building')
+                    ->maxLength(20),
+
+                TextInput::make('city')
+                    ->label('City')
+                    ->required()
+                    ->prefixIcon('fas-building')
+                    ->maxLength(255),
+
+                TextInput::make('zip_code')
+                    ->label('ZIP/Postal Code')
+                    ->required()
+                    ->prefixIcon('fas-map-pin')
+                    ->maxLength(20),
+
+                TextInput::make('country')
+                    ->label('Country')
+                    ->required()
+                    ->prefixIcon('fas-globe')
+                    ->maxLength(100),
+
                 TextInput::make('slug')
                     ->label('This will be your company URL')
                     ->unique(Organization::class, 'slug', ignoreRecord: true)
