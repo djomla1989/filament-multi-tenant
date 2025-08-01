@@ -6,21 +6,23 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
-class WorkOrderDetail extends Model
+class WorkOrderAttributeValue extends Model
 {
     use HasFactory;
 
     protected $fillable = [
         'work_order_id',
-        'key',
+        'work_category_attribute_id',
         'value',
     ];
 
-    /**
-     * Get the work order that owns the detail entry.
-     */
     public function workOrder(): BelongsTo
     {
         return $this->belongsTo(WorkOrder::class);
+    }
+
+    public function attribute(): BelongsTo
+    {
+        return $this->belongsTo(WorkCategoryAttribute::class, 'work_category_attribute_id');
     }
 }

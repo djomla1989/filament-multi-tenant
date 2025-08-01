@@ -16,7 +16,7 @@ class WorkOrderTrackingController extends Controller
     {
         try {
             $workOrder = WorkOrder::where('tracking_token', $trackingToken)
-                ->with(['customer', 'workCategory', 'currentStatus', 'details', 'organization', 'history.status', 'history.createdBy'])
+                ->with(['customer', 'workCategory', 'currentStatus', 'organization', 'history.status', 'history.createdBy'])
                 ->firstOrFail();
 
             $historyItems = $workOrder->getPublicHistoryItems();

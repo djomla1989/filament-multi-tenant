@@ -91,6 +91,11 @@ class WorkOrder extends Model
         return $this->belongsTo(WorkCategory::class);
     }
 
+    public function attributeValues(): HasMany
+    {
+        return $this->hasMany(WorkOrderAttributeValue::class);
+    }
+
     /**
      * Get the current status of the work order.
      */
@@ -123,13 +128,6 @@ class WorkOrder extends Model
         return $this->hasMany(WorkOrderHistory::class)->orderBy('created_at', 'desc');
     }
 
-    /**
-     * Get the detail entries for the work order.
-     */
-    public function details(): HasMany
-    {
-        return $this->hasMany(WorkOrderDetail::class);
-    }
 
     /**
      * Get the tracking URL for the work order.

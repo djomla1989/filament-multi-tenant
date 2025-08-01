@@ -9,7 +9,7 @@ use App\Models\WorkCategory;
 use App\Models\WorkCategoryStatus;
 use App\Models\WorkOrder;
 use App\Services\Notifications\NotificationService;
-use App\Services\WorkOrder\WorkOrderService;
+use App\Services\WorkOrder\DynamicAttributesService;
 use Filament\Forms\Components\DateTimePicker;
 use Filament\Forms\Components\Grid;
 use Filament\Forms\Components\Placeholder;
@@ -30,8 +30,6 @@ use Filament\Tables\Actions\EditAction;
 use Filament\Tables\Actions\ViewAction;
 use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Table;
-use Illuminate\Database\Eloquent\Builder;
-use Illuminate\Database\Eloquent\Model;
 
 class WorkOrderResource extends Resource
 {
@@ -50,6 +48,8 @@ class WorkOrderResource extends Resource
     protected static ?int $navigationSort = 2;
 
     protected static bool $isScopedToTenant = true;
+
+    protected static ?string $tenantOwnershipRelationshipName = 'organization';
 
     public static function form(Form $form): Form
     {
@@ -76,7 +76,10 @@ class WorkOrderResource extends Resource
                                                     })
                                                     ->required()
                                                     ->reactive()
-                                                    ->afterStateUpdated(fn (callable $set) => $set('current_status_id', null)),
+                                                    ->afterStateUpdated(function (callable $set, $state) {
+                                                        $set('current_status_id', null);
+                                                        $set('attribute_values', []);
+                                                    }),
 
                                                 Select::make('current_status_id')
                                                     ->label('Status')
@@ -92,7 +95,7 @@ class WorkOrderResource extends Resource
                                                             ->pluck('name', 'id');
                                                     })
                                                     ->required()
-                                                    ->disabled(fn (callable $get) => !$get('work_category_id')),
+                                                    ->disabled(fn(callable $get) => !$get('work_category_id')),
 
                                                 DateTimePicker::make('estimated_completion_date')
                                                     ->label('Estimated Completion'),
@@ -140,7 +143,7 @@ class WorkOrderResource extends Resource
 
                                                 TextInput::make('customer_name')
                                                     ->label('Name')
-                                                    ->required(fn (Get $get) => !$get('customer_id'))
+                                                    ->required(fn(Get $get) => !$get('customer_id'))
                                                     ->maxLength(255),
 
                                                 TextInput::make('customer_email')
@@ -156,31 +159,35 @@ class WorkOrderResource extends Resource
                                     ]),
                             ]),
 
-                        Tab::make('Additional Details')
-                            ->schema([
-                                Section::make('Work Order Details')
-                                    ->schema([
-                                        // Dynamic form for work order details
-                                        // This would be enhanced for specific work categories
-                                        TextInput::make('details.model')
-                                            ->label('Model/Make')
-                                            ->helperText('e.g., iPhone 12, Samsung TV')
-                                            ->maxLength(255),
+                        Tab::make('Category Attributes')
+                            ->schema(function (callable $get) {
+                                $categoryId = $get('work_category_id');
 
-                                        TextInput::make('details.serial_number')
-                                            ->label('Serial Number')
-                                            ->maxLength(255),
+                                if (!$categoryId) {
+                                    return [
+                                        Placeholder::make('no_category')
+                                            ->label('No Category Selected')
+                                            ->content('Please select a work category to see its attributes.'),
+                                    ];
+                                }
 
-                                        Textarea::make('details.condition')
-                                            ->label('Condition Description')
-                                            ->maxLength(1000),
+                                $attributesService = app(DynamicAttributesService::class);
+                                $fields = $attributesService->getDynamicFormFields($categoryId);
 
-                                        TextInput::make('details.accessories')
-                                            ->label('Included Accessories')
-                                            ->helperText('e.g., Charger, Case')
-                                            ->maxLength(255),
-                                    ]),
-                            ]),
+                                if (empty($fields)) {
+                                    return [
+                                        Placeholder::make('no_attributes')
+                                            ->label('No Attributes')
+                                            ->content('This category has no custom attributes defined.'),
+                                    ];
+                                }
+
+                                return [
+                                    Section::make('Category Custom Attributes')
+                                        ->schema($fields),
+                                ];
+                            })
+                            ->visible(fn(callable $get) => (bool)$get('work_category_id')),
 
                         Tab::make('Notes')
                             ->schema([
@@ -224,7 +231,7 @@ class WorkOrderResource extends Resource
                     ->label('Status')
                     ->sortable()
                     ->badge()
-                    ->color(fn (string $state): string => match ($state) {
+                    ->color(fn(string $state): string => match ($state) {
                         'Completed' => 'success',
                         'In Progress' => 'warning',
                         'On Hold' => 'danger',
@@ -250,7 +257,7 @@ class WorkOrderResource extends Resource
                     Action::make('track')
                         ->label('Track')
                         ->icon('heroicon-o-qr-code')
-                        ->url(fn (WorkOrder $record) => $record->getTrackingUrl())
+                        ->url(fn(WorkOrder $record) => $record->getTrackingUrl())
                         ->openUrlInNewTab(),
                     ViewAction::make(),
                     EditAction::make(),
@@ -266,7 +273,6 @@ class WorkOrderResource extends Resource
     {
         return [
             RelationManagers\HistoryRelationManager::class,
-            RelationManagers\DetailsRelationManager::class,
         ];
     }
 

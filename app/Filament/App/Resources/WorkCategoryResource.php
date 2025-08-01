@@ -105,6 +105,7 @@ class WorkCategoryResource extends Resource
     {
         return [
             RelationManagers\StatusesRelationManager::class,
+            RelationManagers\AttributesRelationManager::class,
         ];
     }
 

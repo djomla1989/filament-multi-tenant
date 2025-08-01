@@ -75,4 +75,14 @@ class Organization extends Model
         return $this->hasMany(WorkCategoryStatus::class);
     }
 
+    public function workCategoryAttributes(): HasMany
+    {
+        return $this->hasMany(WorkCategoryAttribute::class);
+    }
+
+    public function workOrders(): HasMany
+    {
+        return $this->hasMany(WorkOrder::class);
+    }
+
 }

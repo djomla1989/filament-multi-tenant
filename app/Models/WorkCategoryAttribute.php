@@ -9,34 +9,55 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 
-class WorkCategory extends Model
+class WorkCategoryAttribute extends Model
 {
     use HasFactory;
 
     protected $fillable = [
         'name',
+        'type',
         'description',
+        'options',
+        'is_required',
         'is_active',
+        'order',
+        'work_category_id',
         'organization_id',
     ];
 
     protected $casts = [
         'is_active' => 'boolean',
+        'is_required' => 'boolean',
+        'options' => 'array',
+        'order' => 'integer',
     ];
+
+    public function workCategory(): BelongsTo
+    {
+        return $this->belongsTo(WorkCategory::class);
+    }
 
     public function organization(): BelongsTo
     {
         return $this->belongsTo(Organization::class);
     }
 
-    public function statuses(): HasMany
+    public function attributeValues(): HasMany
     {
-        return $this->hasMany(WorkCategoryStatus::class)->orderBy('order');
+        return $this->hasMany(WorkOrderAttributeValue::class);
     }
 
-    public function attributes(): HasMany
+    public static function getTypes(): array
     {
-        return $this->hasMany(WorkCategoryAttribute::class)->orderBy('order');
+        return [
+            'text' => 'Text',
+            'textarea' => 'Textarea',
+            'number' => 'Number',
+            'select' => 'Select',
+            'radio' => 'Radio Buttons',
+            'date' => 'Date',
+            'checkbox' => 'Checkbox',
+        ];
     }
 
     protected static function booted(): void
